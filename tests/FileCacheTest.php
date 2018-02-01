@@ -8,6 +8,7 @@ use Jarzon\Cache;
 
 class FileCacheTest extends TestCase
 {
+    // TODO: Use vfsStream
     public function testSaveCacheFile()
     {
         $cache = new Cache(['cache_folder' =>  __DIR__ . '/cache']);
