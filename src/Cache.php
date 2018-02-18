@@ -19,7 +19,7 @@ class Cache
         if($timestamp > 0 && (time() - $timestamp) < $timeToLive) {
             return $this->getCacheFile($name);
         } else {
-            $result = $callback();
+            $result = $callback($name);
             $this->saveCacheFile($name, $result);
 
             return $result;
