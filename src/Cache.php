@@ -12,6 +12,20 @@ class Cache
         ];
     }
 
+    public function registerCache($name, int $timeToLive, callable $callback)
+    {
+        $timestamp = $this->cacheTimestamp($name);
+
+        if($timestamp > 0 && (time() - $timestamp) < $timeToLive) {
+            return $this->getCacheFile($name);
+        } else {
+            $result = $callback();
+            $this->saveCacheFile($name, $result);
+
+            return $result;
+        }
+    }
+
     public function cacheTimestamp(string $file) : int
     {
         $location = $this->getFileLocation($file);
