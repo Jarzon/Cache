@@ -4,6 +4,7 @@ namespace Jarzon;
 class Cache
 {
     protected $options = [];
+    protected $batch = [];
 
     public function __construct(array $options = [])
     {
@@ -21,6 +22,23 @@ class Cache
         } else {
             $result = $callback($name);
             $this->saveCacheFile($name, $result);
+
+            return $result;
+        }
+    }
+
+    public function registerBatchCache($batchName, $name, int $timeToLive, callable $callback)
+    {
+        $timestamp = $this->cacheTimestamp($name);
+
+        if($timestamp && ((time() - $timestamp) < $timeToLive || in_array($batchName, $this->batch))) {
+            return $this->getCacheFile($name);
+        }
+        else {
+            $result = $callback($name);
+            $this->saveCacheFile($name, $result);
+
+            $this->batch[$batchName] = true;
 
             return $result;
         }
